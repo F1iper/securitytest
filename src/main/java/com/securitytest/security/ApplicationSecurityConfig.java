@@ -39,11 +39,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-//                .rememberMe()
-//                .and()
-//                .formLogin()
-//                .and()
-                .httpBasic();
+                .formLogin();
     }
 
     @Override
