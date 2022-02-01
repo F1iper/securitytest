@@ -16,7 +16,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import static com.securitytest.security.ApplicationUserRole.*;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = false)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -31,17 +31,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() //// TODO: 30.01.2022 read about CSRF :) sekurak (?)
+//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/api/**").hasRole(STUDENT.name())
-//                .antMatchers(DELETE, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-//                .antMatchers(POST, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission())
-//                .antMatchers(PUT, "/management/api/**").hasAuthority(COURSE_WRITE.getPermission()) // TODO: 30.01.2022 for authority there should be permission
-//                .antMatchers(GET, "/management/api/**").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name()) // TODO: 30.01.2022 for roles there should be name
                 .anyRequest()
                 .authenticated()
                 .and()
+//                .rememberMe()
+//                .and()
+//                .formLogin()
+//                .and()
                 .httpBasic();
     }
 
