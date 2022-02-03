@@ -30,11 +30,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
@@ -43,20 +42,27 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/courses", true)
+                    .loginPage("/login")
+                    .permitAll()
+                    .defaultSuccessUrl("/courses", true)
+//parameters may differ from the default ones, then need to be paired with appopriate *.html file
+                    .passwordParameter("password")
+                    .usernameParameter("username")
                 .and()
                 .rememberMe()
-                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
-                .key("somethingverysecured") //the key used MD5 algorithm, combines expiration date and username
+                    .rememberMeParameter("/remember-me")
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+//the key used MD5 algorithm, combines expiration date and username
+                    .key("somethingverysecured")
                 .and()
                 .logout()
-                //if csrf is enabled the /logout have to use HTTP POST method, otherwise it could be HTTP GET
-                .logoutUrl("/logout").logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET", false))
-                .clearAuthentication(true)
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
+//if csrf is enabled the /logout have to use HTTP POST method, otherwise it could be HTTP GET
+                    .logoutUrl("/logout")
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET", false))
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID", "remember-me")
+                    .logoutSuccessUrl("/login");
     }
 
     @Override
